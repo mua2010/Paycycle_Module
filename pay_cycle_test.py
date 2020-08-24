@@ -12,43 +12,25 @@ logging.basicConfig(format='[%(asctime)s] [%(levelname)s] %(message)s', datefmt=
 
 class TestPayCycle(unittest.TestCase):
 
-    # TESTS get_valid_date_object Util
-
-    def test_get_valid_date_object_positive0(self):
-        """Positive Test case with valid date format.
-        """
-        date = "2020-01-25"
-        valid_date_object = date_class(2020,1,25)
-        try:
-            date_object = get_valid_date_object(date)
-        except ValueError:
-            raise
-
-        assert date_object == valid_date_object
-    
-    def test_get_valid_date_object_negative0(self):
-        """Negative Test case with invalid date format.
-        """
-        date = "2020-25-25" # wrong month: can only be 1->12
-        try:
-            date_object = get_valid_date_object(date)
-        except ValueError as ve:
-            exception = ve
-            logging.error(exception)
-
-        assert exception.__class__ == ValueError
-
     # TESTS is_payday
 
     def test_is_payday_positive0(self):
-        pass
+        """Positive Test case to check if ...
+        """
+        pay_cycle = PayCycle('BI_WEEKLY')
+        date = date_class(2020)
+        expected_next_paydate = date_class(2020, 1, 15)
+
+        next_paydate_object = pay_cycle.next_payday(current_date)
+
+        assert next_paydate_object == expected_next_paydate
 
     # TESTS next_payday
 
     def test_next_payday_positive0(self):
         """Positive Test case to check if a correct next bi-weekly paydate object is returned.
         """
-        pay_cycle = PayCycle('bi-weekly')
+        pay_cycle = PayCycle('BI_WEEKLY')
         current_date = "2020-01-01"
         expected_next_paydate = date_class(2020, 1, 15)
 
