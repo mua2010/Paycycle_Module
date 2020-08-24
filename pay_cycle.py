@@ -35,21 +35,49 @@ NOTES:
     https://pypi.org/project/holidays/
 
 '''
-
+from utils import get_valid_payday
 
 def __get_frequency(pay_cycle_type: str) -> timedelta:
-    if pay_cycle_type == 'bi-weekly'
+    if pay_cycle_type == 'bi-weekly':
         return timedelta(weeks=2)
 
-def is_payday(pay_cycle_type: str, date: date_class = None) -> bool:
+def is_payday(pay_cycle_type: str, 
+              holidays: list, 
+              first_payday: date_class, 
+              date: date_class = None) -> bool:
     if not date:
         date = date_class.today()
-    if date == self.last_payday:
-        return True
+    if (date < first_payday) or (date in holidays):
+        return False
+    
     frequency = __get_frequency(pay_cycle_type)
-    if (date - self.last_payday) % frequency == 0:
-        return True
+    curr_day = first_payday
+    while curr_day <= date:
+        if curr_day == date:
+            return True
+        if (curr_day + frequency) in holidays:
+            holiday = curr_day + frequency
+            curr_day = get_valid_payday(holiday)
+        else:
+            curr_day += frequency
     return False
+
+# first_payday = date_class(2020, 12, 11)
+# date_to_check = date_class(2020, 12, 24)
+# holidays = [date_class(2020,12,25)]
+# print(is_payday('bi-weekly', holidays, first_payday, date_to_check))
+
+# first_payday = date_class(2020, 11, 13)
+# date_to_check = date_class(2020, 12, 24)
+# holidays = [date_class(2020,11,11), date_class(2020,11,26), date_class(2020,12,25)]
+# print(is_payday('bi-weekly', holidays, first_payday, date_to_check))
+
+# test diff in years
+first_payday = date_class(2019, 12, 13)
+date_to_check = date_class(2020, 1, 10)
+holidays = [date_class(2019,12,25), date_class(2020,1,1), date_class(2020,1,20)]
+print(is_payday('bi-weekly', holidays, first_payday, date_to_check))
+
 
 def next_payday(self, date: date_class) -> date_class:
     return date + self.frequency

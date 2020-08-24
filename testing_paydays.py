@@ -24,30 +24,39 @@ while first_pd <= date_to_check:
     if first_pd + frequency(+14) == a holiday
         first_pd = get_next_available_date(holiday)
     '''
+    if first_pd + frequency == a holiday
+        first_pd = get_next_available_date(holiday)
+
     first_pd = first_pd + frequency
 
+from datetime import date
 # Making sure that the next avaialble date is a business day AND nearest
-def get_next_available_date(holiday):
-    from pandas.tseries.offsets import BDay
-    prev_business_day = holiday - BDay(1)
-
-    next_business_day = holiday + BDay(1)
+def get_valid_payday(holiday: date):
 
     # for a weekday, monday is 0 and sunday is 6
-
-    num_of_days_before = holiday - prev_business_day
-    num_of_days_after = holiday + next_business_day:
-
-    def next_business_day():
-    
+    week_day_placeholder = (holiday + timedelta(days=1)).weekday()
+    num_of_days_after = 1
+    while week_day_placeholder in {5,6}:
+        num_of_days_after += 1
+        week_day_placeholder = (holiday + timedelta(days=num_of_days_after)).weekday()
+        
+    week_day_placeholder = (holiday - timedelta(days=1)).weekday()
+    num_of_days_before = 1
+    while week_day_placeholder in {5,6}:
+        num_of_days_before += 1
+        week_day_placeholder = (holiday - timedelta(days=num_of_days_before)).weekday()
 
     # POST PROCESS
-    # 1 vs 3 from a friday
     if num_of_days_before < num_of_days_after:
-        return prev_business_day
+        return holiday - timedelta(days=num_of_days_before)
     else:
-        return next_business_day
+        return holiday + timedelta(days=num_of_days_after)
+        
 
+
+
+holiday = date(2020,10,12)
+print(get_next_available_date(holiday))
 
 # def is_payday(date: date_class = None) -> bool:
 
@@ -56,7 +65,7 @@ def get_next_available_date(holiday):
 #     return False
 # while first_pd <= date_to_check:
 
-
+# breakpoint()
 
 
 
