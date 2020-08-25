@@ -55,32 +55,38 @@ def is_payday(pay_cycle_type: str,
     while curr_day <= date:
         if curr_day == date:
             return True
-        if (curr_day + frequency) in holidays:
-            holiday = curr_day + frequency
+        if (holiday:=(curr_day + frequency)) in holidays:
             curr_day = get_valid_payday(holiday)
         else:
             curr_day += frequency
     return False
 
-# first_payday = date_class(2020, 12, 11)
-# date_to_check = date_class(2020, 12, 24)
-# holidays = [date_class(2020,12,25)]
-# print(is_payday('bi-weekly', holidays, first_payday, date_to_check))
+# negative test
+pay_cycle_type = 'bi-weekly'
+first_payday = date_class(2020, 10, 2)
+date_to_check = date_class(2020, 12, 25)
+holidays = [date_class(2020,10,12), date_class(2020,11,11), date_class(2020,11,26), date_class(2020,12,25)]
+print(is_payday(pay_cycle_type, holidays, first_payday, date_to_check)) # false
 
-# first_payday = date_class(2020, 11, 13)
-# date_to_check = date_class(2020, 12, 24)
-# holidays = [date_class(2020,11,11), date_class(2020,11,26), date_class(2020,12,25)]
-# print(is_payday('bi-weekly', holidays, first_payday, date_to_check))
+# positvie test diff in months TODO: check for multiple months
+first_payday = date_class(2020, 10, 2)
+date_to_check = date_class(2020, 12, 24)
+holidays = [date_class(2020,10,12), date_class(2020,11,11), date_class(2020,11,26), date_class(2020,12,25)]
+print(is_payday(pay_cycle_type, holidays, first_payday, date_to_check)) # True
 
-# test diff in years
+# postiive test diff in years TODO: add a negative test case
 first_payday = date_class(2019, 12, 13)
 date_to_check = date_class(2020, 1, 10)
 holidays = [date_class(2019,12,25), date_class(2020,1,1), date_class(2020,1,20)]
-print(is_payday('bi-weekly', holidays, first_payday, date_to_check))
+print(is_payday(pay_cycle_type, holidays, first_payday, date_to_check)) # True
+
+# TODO: check for a future payday 2021?? or maybe done
+
 
 
 def next_payday(self, date: date_class) -> date_class:
     return date + self.frequency
+    # TODO: frequency icrment then call get valid payday holiday
 
 def next_x_paydays(self, x_number_of_paydays: int, date: date_class = None) -> list:
     if not date:
