@@ -28,8 +28,10 @@ from datetime import (
 from enum import Enum
 
 # Local Imports
-from helpers import get_valid_payday
-
+from helpers import (
+    is_payday_helper,
+    pick_nearest_payday,
+)
 
 
 # TODO: ADD DOC STRINGS for all methods 
@@ -47,6 +49,8 @@ class WeekDayPlaceholder(Enum):
     SUNDAY = 6
 
 class PayCycle:
+    """Pay Cycle Class.
+    """
 
     def __init__(self, 
                  pay_cycle_type: str, 
@@ -66,32 +70,47 @@ class PayCycle:
         self.last_payday = last_payday
         self.holidays = holidays
 
-        self.default_payday = self.first_payday.weekday()
-        # self.default_payday = WeekDayPlaceholder(self.first_payday.weekday()).value
+        self.default_payday = WeekDayPlaceholder(self.first_payday.weekday()).value
 
     def is_payday(self, date: date_class = None) -> bool:
         if not date:
             date = date_class.today()
         if (date < self.first_payday) or (date in self.holidays):
             return False
+        if (date == self.first_payday) or (date == self.last_payday):
+            return True
         
-        # Pick the payday that is nearest to passed in date
+        # Pick the payday that is nearest to 'date'
+        nearest_payday = pick_nearest_payday(date, self.first_payday, self.last_payday)
         
-        # is_holiday = False
-        curr_day = self.first_payday
-        while curr_day <= date:
-            if curr_day == date:
-                return True
-            if curr_day.weekday() != self.default_payday:
-                # reset the day to follow its original pay cycle
-                curr_day = holiday
+        frequency = self.frequency
 
-            if (holiday := (curr_day + self.frequency)) in self.holidays:
-                # is_holiday = True
-                curr_day = get_valid_payday(holiday)
-            else:
-                curr_day += self.frequency
-        return False
+        # if date < nearest_payday:
+        #     # set config to go backwards
+        #     condition = curr_day >= date
+
+        # Go Forward
+        # while (curr_day <= date):
+        #     if curr_day == date:
+        #         return True
+        #     if curr_day.weekday() != default_payday:
+        #         # reset the curr_day to follow its original pay cycle
+        #         curr_day = holiday
+
+        #     if (holiday := (curr_day + frequency)) in holidays:
+        #         curr_day = get_valid_payday(holiday)
+        #     else:
+        #         curr_day += frequency
+        # return False
+
+        # TODO: implement the above logic into next_payday
+
+        return is_payday_helper(
+                    date=date,
+                    frequency=self.frequency,
+                    curr_day=nearest_payday, default_payday=self.default_payday,
+                    holidays=self.holidays
+                )
 
     def next_payday(self, date: date_class) -> date_class:
         pass

@@ -16,6 +16,7 @@ logging.basicConfig(format='[%(asctime)s] [%(levelname)s] %(message)s', datefmt=
 # UNIT TEST MOCK PATCH
 # https://www.youtube.com/watch?v=WFRljVPHrkE
         
+# TODO: Add comments with assertions
 
 US_HOLIDAYS = holidays.UnitedStates()
 

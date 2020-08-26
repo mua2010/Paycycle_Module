@@ -5,11 +5,17 @@ from datetime import (
 )
 
 # Local Imports
-from helpers import get_valid_payday
+from helpers import (
+    get_valid_payday,
+    pick_nearest_payday
+)
 
+# TODO: Add comments with assertions
 
 class TestHelpers(unittest.TestCase):
     
+    # TESTS get_valid_payday
+
     def test_get_valid_payday_positive0(self):
         """Positive Test case to check if Dec 24th, 2020 is a valid payday 
            given Dec 25th, 2020 is a holiday.
@@ -47,6 +53,32 @@ class TestHelpers(unittest.TestCase):
         except Exception as re:
             exception = re.__class__
         assert exception == expected_exception
+
+    # TESTS pick_nearest_payday
+
+    def test_pick_nearest_payday_positive0(self):
+        """Positive Test case to check if correct payday is picked
+           given a date closer to first payday.
+        """
+        date = date_class(2020,3,1)
+        first_payday = date_class(2020,1,1)
+        last_payday = date_class(2020,12,31)
+
+        nearest_payday = pick_nearest_payday(date, first_payday, last_payday)
+        
+        assert nearest_payday == first_payday
+
+    def test_pick_nearest_payday_positive1(self):
+        """Positive Test case to check if correct payday is picked
+           given a date closer to last payday.
+        """
+        date = date_class(2020,11,1)
+        first_payday = date_class(2020,1,1)
+        last_payday = date_class(2020,12,31)
+
+        nearest_payday = pick_nearest_payday(date, first_payday, last_payday)
+        
+        assert nearest_payday == last_payday
 
 
 if __name__ == '__main__':
