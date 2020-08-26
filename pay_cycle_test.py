@@ -23,6 +23,7 @@ class TestPayCycle(unittest.TestCase):
 
     def setUp(self):
         pay_cycle_type = 'BI_WEEKLY'
+        # ASSUMING THE PAYDAY IS A FRIDAY
         first_payday = date_class(2019,1,11)
         last_payday = date_class(2020,8,21)
         self.pay_cycle = PayCycle(
@@ -30,6 +31,9 @@ class TestPayCycle(unittest.TestCase):
             first_payday=first_payday, last_payday=last_payday,
             holidays=US_HOLIDAYS
         )
+
+    def tearDown(self):
+        pass
 
     # TESTS is_payday
 
@@ -54,6 +58,18 @@ class TestPayCycle(unittest.TestCase):
         assert is_payday == True
 
         date_to_check = date_class(2020,12,24)
+        is_payday = self.pay_cycle.is_payday(date_to_check)
+        assert is_payday == True
+
+    def test_is_payday_positive1(self):
+        """Positive Test case to check a valid payday when a payday
+           becomes Thursday because Friday was a holiday.
+        """
+        date_to_check = date_class(2021,1,8)
+        is_payday = self.pay_cycle.is_payday(date_to_check)
+        assert is_payday == True
+
+        date_to_check = date_class(2022,11,25)
         is_payday = self.pay_cycle.is_payday(date_to_check)
         assert is_payday == True
 
@@ -131,4 +147,4 @@ class TestPayCycle(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=2)
