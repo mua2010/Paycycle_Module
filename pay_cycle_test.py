@@ -1,29 +1,64 @@
+# Standard Library Imports
 import unittest
 from datetime import (
     date as date_class
 )
-
 import logging
 
-from utils import get_valid_date_object
+# Local Imports
 from pay_cycle import PayCycle
 
+# Third-Party Imports
+import holidays
+
 logging.basicConfig(format='[%(asctime)s] [%(levelname)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
+
+# UNIT TEST MOCK PATCH
+# https://www.youtube.com/watch?v=WFRljVPHrkE
+
+
+# negative test
+pay_cycle_type = 'BI-WEEKLY'
+first_payday = date_class(2020, 10, 2)
+date_to_check = date_class(2020, 12, 25)
+holidays = [date_class(2020,10,12), date_class(2020,11,11), date_class(2020,11,26), date_class(2020,12,25)]
+print(is_payday(pay_cycle_type, holidays, first_payday, date_to_check)) # false
+
+# positvie test diff in months TODO: check for multiple months
+first_payday = date_class(2020, 10, 2)
+date_to_check = date_class(2020, 12, 24)
+holidays = [date_class(2020,10,12), date_class(2020,11,11), date_class(2020,11,26), date_class(2020,12,25)]
+print(is_payday(pay_cycle_type, holidays, first_payday, date_to_check)) # True
+
+# postiive test diff in years TODO: add a negative test case
+first_payday = date_class(2019, 12, 13)
+date_to_check = date_class(2020, 1, 10)
+holidays = [date_class(2019,12,25), date_class(2020,1,1), date_class(2020,1,20)]
+print(is_payday(pay_cycle_type, holidays, first_payday, date_to_check)) # True
+
+# TODO: check for a future payday 2021?? or maybe done above
+        
+
+US_HOLIDAYS = holidays.UnitedStates()
 
 class TestPayCycle(unittest.TestCase):
 
     # TESTS is_payday
 
     def test_is_payday_positive0(self):
-        """Positive Test case to check if ...
+        """Positive Test case to check if 
         """
         pay_cycle = PayCycle('BI_WEEKLY')
-        date = date_class(2020)
+        date = date_class(2020, )
         expected_next_paydate = date_class(2020, 1, 15)
 
-        next_paydate_object = pay_cycle.next_payday(current_date)
+        next_paydate_object = pay_cycle.is_payday(current_date)
 
         assert next_paydate_object == expected_next_paydate
+
+
+
+
 
     # TESTS next_payday
 
