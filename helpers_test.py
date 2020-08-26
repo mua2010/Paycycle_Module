@@ -5,10 +5,10 @@ from datetime import (
 )
 
 # Local Imports
-from utils import get_valid_payday
+from helpers import get_valid_payday
 
 
-class TestUtils(unittest.TestCase):
+class TestHelpers(unittest.TestCase):
     
     def test_get_valid_payday_positive0(self):
         """Positive Test case to check if Dec 24th, 2020 is a valid payday 
@@ -30,7 +30,7 @@ class TestUtils(unittest.TestCase):
 
     def test_get_valid_payday_negative0(self):
         """Negative Test case to check if Exception is raised if 
-           invalid data is passed to 'get_valid_payday' utility.
+           invalid data is passed to 'get_valid_payday'.
         """
         holiday = None
         expected_exception = RuntimeError

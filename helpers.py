@@ -4,21 +4,9 @@ from datetime import (
     timedelta
 )
 
-# Making sure that the next avaialble date is a business day AND nearest
-# TODO: unit test
-# TODO: ADD DOCSTRINGS
 
 def get_valid_payday(holiday: date_class) -> date_class:
-    """[summary]
-
-    Args:
-        holiday (date_class): [description]
-
-    Raises:
-        RuntimeError: [description]
-
-    Returns:
-        date_class: [description]
+    """Calculates the neareast available payday which is a valid weekday.
     """
     if not holiday:
         raise RuntimeError('No date passed in. A date is required to get a valid payday.')

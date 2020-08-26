@@ -28,7 +28,7 @@ from datetime import (
 from enum import Enum
 
 # Local Imports
-from utils import get_valid_payday
+from helpers import get_valid_payday
 
 
 
@@ -61,17 +61,16 @@ class PayCycle:
     def is_payday(self, date: date_class = None) -> bool:
         if not date:
             date = date_class.today()
-        if (date < first_payday) or (date in holidays):
+        if (date < self.first_payday) or (date in self.holidays):
             return False
         
-        curr_day = first_payday
-        while curr_day <= date:
+        while (curr_day:=self.first_payday) <= date:
             if curr_day == date:
                 return True
-            if (holiday:=(curr_day + frequency)) in holidays:
+            if (holiday:=(curr_day + self.frequency)) in self.holidays:
                 curr_day = get_valid_payday(holiday)
             else:
-                curr_day += frequency
+                curr_day += self.frequency
         return False
 
     def next_payday(self, date: date_class) -> date_class:
