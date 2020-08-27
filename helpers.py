@@ -60,14 +60,15 @@ def is_payday_helper(
         curr_day: date_class, default_payday: date_class, 
         holidays: list) -> bool:
     """A Helper function for PayCycle.is_payday.
-       Leverges the provided config parameters
+       Leverges the provided config parameters to check if a date is a payday.
     """
+    holiday = None
     if date < curr_day:
         # Go Backward
         while (curr_day >= date):
             if curr_day == date:
                 return True
-            if curr_day.weekday() != default_payday:
+            if curr_day.weekday() != default_payday.value:
                 # reset the curr_day to follow its original pay cycle
                 curr_day = holiday
 
@@ -81,7 +82,7 @@ def is_payday_helper(
         while (curr_day <= date):
             if curr_day == date:
                 return True
-            if curr_day.weekday() != default_payday:
+            if curr_day.weekday() != default_payday.value:
                 # reset the curr_day to follow its original pay cycle
                 curr_day = holiday
 

@@ -42,16 +42,15 @@ class TestHelpers(unittest.TestCase):
         expected_exception = RuntimeError
         try:
             valid_payday = get_valid_payday(holiday)
-        except Exception as re:
-            exception = re.__class__
+        except Exception as exc:
+            exception = exc.__class__
         assert exception == expected_exception
 
         holiday = [date_class(2020, 12, 25)]
-        expected_respnse = RuntimeError
         try:
             valid_payday = get_valid_payday(holiday)
-        except Exception as re:
-            exception = re.__class__
+        except Exception as exc:
+            exception = exc.__class__
         assert exception == expected_exception
 
     # TESTS pick_nearest_payday

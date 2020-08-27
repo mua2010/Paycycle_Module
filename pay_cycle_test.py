@@ -6,7 +6,10 @@ from datetime import (
 import logging
 
 # Local Imports
-from pay_cycle import PayCycle
+from pay_cycle import (
+    PayCycle, 
+    WeekDayPlaceholder
+)
 
 # Third-Party Imports
 import holidays
@@ -25,11 +28,11 @@ class TestPayCycle(unittest.TestCase):
     def setUp(self):
         pay_cycle_type = 'BI_WEEKLY'
         # ASSUMING THE PAYDAY IS A FRIDAY
-        first_payday = date_class(2019,1,11)
+        self.first_payday = date_class(2019,1,11)
         last_payday = date_class(2020,8,21)
         self.pay_cycle = PayCycle(
             pay_cycle_type=pay_cycle_type,
-            first_payday=first_payday, last_payday=last_payday,
+            first_payday=self.first_payday, last_payday=last_payday,
             holidays=US_HOLIDAYS
         )
 
@@ -82,7 +85,7 @@ class TestPayCycle(unittest.TestCase):
         assert is_payday == False
 
     def test_is_payday_negative1(self):
-        """Negative Test case to check if holiday is a payday.
+        """Negative Test case to check if holiday is not a payday.
         """
         date_to_check = date_class(2020,12,25)
         is_payday = self.pay_cycle.is_payday(date_to_check)
@@ -101,28 +104,82 @@ class TestPayCycle(unittest.TestCase):
 
     # TESTS next_payday
 
-    # def test_next_payday_positive0(self):
-    #     """Positive Test case to check if a correct next bi-weekly paydate object is returned.
-    #     """
-    #     pay_cycle = PayCycle('BI_WEEKLY')
-    #     current_date = "2020-01-01"
-    #     expected_next_paydate = date_class(2020, 1, 15)
+    def test_next_payday_positive0(self):
+        """Positive Test case to check if a date class object is returned.
+        """
+        date = date_class(2020,1,1)
+        next_payday = self.pay_cycle.next_payday(date)
+        assert isinstance(next_payday, date_class)
 
-    #     next_paydate_object = pay_cycle.next_payday(current_date)
+    def test_next_payday_positive1(self):
+        """Positive Test case to check if a correct payday is returned
+           when given date is <= first_pay of the user.
+        """
+        date = date_class(2018,1,14)
+        next_payday = self.pay_cycle.next_payday(date)
+        assert next_payday == self.first_payday
 
-    #     assert next_paydate_object == expected_next_paydate
+    def test_next_payday_positive2(self):
+        """Positive Test case to check if the next payday is the very next day
+           after the date.
+        """
+        date = date_class(2019,7,11)
+        expected_next_payday = date_class(2019,7,12)
+        next_payday = self.pay_cycle.next_payday(date)
+        assert next_payday == expected_next_payday
+    
+    def test_next_payday_positive3(self):
+        """Positive Test case to check if the next payday is on a thursday.
+        """
+        date = date_class(2020,12,12)
+        expected_next_payday = date_class(2020,12,24)
+        next_payday = self.pay_cycle.next_payday(date)
+        assert next_payday == expected_next_payday
+        assert WeekDayPlaceholder(next_payday.weekday()) == WeekDayPlaceholder.THURSDAY
+    
+    def test_next_payday_positive4(self):
+        """Positive Test case to check if a correct payday from the next year
+           is returned when the given date is last day of previous year.
+        """
+        date = date_class(2020,12,31)
+        expected_next_payday = date_class(2021,1,8)
+        next_payday = self.pay_cycle.next_payday(date)
+        assert next_payday == expected_next_payday
 
-    # def test_next_payday_positive1(self):
-    #     """Positive Test case to check if a correct next bi-weekly paydate object is returned 
-    #        with a leap year.
-    #     """
-    #     pay_cycle = PayCycle('bi-weekly')
-    #     current_date = "2020-02-25"
-    #     expected_next_paydate = date_class(2020, 3, 10)
+    def test_next_payday_positive5(self):
+        """Positive Test case to check if a correct next bi-weekly payday is returned.
+        """
+        date = date_class(2019,1,11)
+        expected_next_payday = date_class(2019,1,25)
+        next_payday = self.pay_cycle.next_payday(date)
+        assert next_payday == expected_next_payday
 
-    #     next_paydate_object = pay_cycle.next_payday(current_date)
+        date = date_class(2019,1,12)
+        expected_next_payday = date_class(2019,1,25)
+        next_payday = self.pay_cycle.next_payday(date)
+        assert next_payday == expected_next_payday
 
-    #     assert next_paydate_object == expected_next_paydate
+    def test_next_payday_negative0(self):
+        """Negative Test case to check if Exception is raised if 
+           no date class object is passed in.
+        """
+        expected_exception = RuntimeError
+        date = None
+        try:
+            next_payday = self.pay_cycle.next_payday(date)
+        except Exception as exc:
+            exception = exc.__class__
+        assert exception == expected_exception
+
+        date = [date_class(2020, 12, 25)]
+        try:
+            next_payday = self.pay_cycle.next_payday(date)
+        except Exception as exc:
+            exception = exc.__class__
+        assert exception == expected_exception
+
+
+    
 
     # # TESTS next_x_paydays
     # # 1. number of paydays = 26
