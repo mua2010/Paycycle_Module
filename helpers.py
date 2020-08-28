@@ -7,9 +7,6 @@ from datetime import (
 
 def get_valid_payday(holiday: date_class) -> date_class:
     """Given a holiday, return the nearest available payday which is a valid weekday.
-       
-       Note: This assumes that if it is a holiday on user's default payday, then a
-       a valid payday 
     """
     if not holiday:
         raise RuntimeError('No date passed in. A date is required to get a valid payday.')
@@ -31,6 +28,7 @@ def get_valid_payday(holiday: date_class) -> date_class:
         week_day_placeholder = (holiday - timedelta(days=num_of_days_before_holiday)).weekday()
 
     # POST PROCESS
+    # Note: If the number of days before and after are same, the default date will be next day.
     if num_of_days_before_holiday < num_of_days_after_holiday:
         return holiday - timedelta(days=num_of_days_before_holiday)
     else:

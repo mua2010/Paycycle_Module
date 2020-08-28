@@ -30,6 +30,7 @@ from enum import Enum
 # Local Imports
 from helpers import (
     is_payday_helper,
+    get_valid_payday,
     pick_nearest_date,
 )
 
@@ -117,12 +118,43 @@ class PayCycle:
         # return False
         # # TODO: ==================== implement the above logic into next_payday
 
-        return is_payday_helper(
-                date=date,
-                frequency=self.frequency,
-                curr_day=nearest_payday, default_payday=self.default_payday,
-                holidays=self.holidays
-            )
+        # return is_payday_helper(
+        #         date=date,
+        #         frequency=self.frequency,
+        #         curr_day=nearest_payday, default_payday=self.default_payday,
+        #         holidays=self.holidays
+        #     )
+
+        holiday = None
+        curr_day = nearest_payday
+        if date < curr_day:
+            # Go Backward
+            while (curr_day >= date):
+                if curr_day == date:
+                    return True
+                if curr_day.weekday() != self.default_payday.value:
+                    # reset the curr_day to follow its original pay cycle
+                    curr_day = holiday
+
+                if (holiday := (curr_day - self.frequency)) in self.holidays:
+                    curr_day = get_valid_payday(holiday)
+                else:
+                    curr_day -= self.frequency
+            return False
+        else: 
+            # Go Forward
+            while (curr_day <= date):
+                if curr_day == date:
+                    return True
+                if curr_day.weekday() != self.default_payday.value:
+                    # reset the curr_day to follow its original pay cycle
+                    curr_day = holiday
+
+                if (holiday := (curr_day + self.frequency)) in self.holidays:
+                    curr_day = get_valid_payday(holiday)
+                else:
+                    curr_day += self.frequency
+            return False
 
     def next_payday(self, date: date_class=date_class.today()) -> date_class:
         if not isinstance(date, date_class):
