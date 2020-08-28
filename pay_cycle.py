@@ -79,16 +79,12 @@ class PayCycle:
     def is_payday(self, date: date_class=date_class.today()) -> bool:
         """Checks whether the given date is payday for the user.
 
-        Note: This assumes that users will accurately report their first payday.
-
         Args:
-            date (date_class, optional): Any date. Defaults to date_class.today().
+            date (date_class, optional): Any date. Defaults to today's date.
 
         Returns:
             bool: Return True if the date is a payday for the user. False Otherwise.
         """
-        if not date:
-            date = 
         if (date < self.first_payday) or (date in self.holidays):
             return False
         if (date == self.first_payday) or (date == self.last_payday):
