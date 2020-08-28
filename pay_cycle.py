@@ -58,8 +58,8 @@ class PayCycle:
                  holidays: list):
         """Constructor for PayCycle Class.
 
-        Note: This assumes that along with pay cycle type users will accurately report 
-        their first payday and holidays.??? TODO: DO THEY WANT TO REPORT HOLIDAYS?
+        Note: This assumes that along with pay cycle type, users will accurately report 
+        their first payday. TODO: DO THEY WANT TO REPORT HOLIDAYS or we default use something?
 
         Args:
             pay_cycle_type (str): Type of user's pay cycle. 
@@ -96,26 +96,26 @@ class PayCycle:
         # TODO: Can be made faster by checking difference and skipping months/years
 
         # ======================
-        frequency = self.frequency
+        # frequency = self.frequency
 
-        if date < nearest_payday:
-            # set config to go backwards
-            condition = curr_day >= date
-        holiday = None
-        # Go Forward
-        while (curr_day <= date):
-            if curr_day == date:
-                return True
-            if curr_day.weekday() != self.default_payday.value:
-                # reset the curr_day to follow its original pay cycle
-                curr_day = holiday
+        # if date < nearest_payday:
+        #     # set config to go backwards
+        #     condition = curr_day >= date
+        # holiday = None
+        # # Go Forward
+        # while (curr_day <= date):
+        #     if curr_day == date:
+        #         return True
+        #     if curr_day.weekday() != self.default_payday.value:
+        #         # reset the curr_day to follow its original pay cycle
+        #         curr_day = holiday
 
-            if (holiday := (curr_day + self.frequency)) in self.holidays:
-                curr_day = get_valid_payday(holiday)
-            else:
-                curr_day += self.frequency
-        return False
-        # TODO: ==================== implement the above logic into next_payday
+        #     if (holiday := (curr_day + self.frequency)) in self.holidays:
+        #         curr_day = get_valid_payday(holiday)
+        #     else:
+        #         curr_day += self.frequency
+        # return False
+        # # TODO: ==================== implement the above logic into next_payday
 
         return is_payday_helper(
                 date=date,
@@ -124,8 +124,8 @@ class PayCycle:
                 holidays=self.holidays
             )
 
-    def next_payday(self, date: date_class) -> date_class:
-        if not (date or isinstance(date, date_class)):
+    def next_payday(self, date: date_class=date_class.today()) -> date_class:
+        if not isinstance(date, date_class):
             raise RuntimeError('A date class object is required to find the next payday.')
         if date <= self.first_payday:
             return self.first_payday

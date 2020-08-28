@@ -161,16 +161,9 @@ class TestPayCycle(unittest.TestCase):
 
     def test_next_payday_negative0(self):
         """Negative Test case to check if Exception is raised if 
-           no date class object is passed in.
+           invalid date class object is passed in.
         """
         expected_exception = RuntimeError
-        date = None
-        try:
-            next_payday = self.pay_cycle.next_payday(date)
-        except Exception as exc:
-            exception = exc.__class__
-        assert exception == expected_exception
-
         date = [date_class(2020, 12, 25)]
         try:
             next_payday = self.pay_cycle.next_payday(date)
