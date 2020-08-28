@@ -58,10 +58,13 @@ class PayCycle:
                  holidays: list):
         """Constructor for PayCycle Class.
 
+        Note: This assumes that along with pay cycle type users will accurately report 
+        their first payday and holidays.??? TODO: DO THEY WANT TO REPORT HOLIDAYS?
+
         Args:
             pay_cycle_type (str): Type of user's pay cycle. 
                                   ‘BI-WEEKLY, ‘SEMI-MONTHLY’, ‘MONTHLY’, or ‘WEEKLY’.
-            first_payday (date_class): The first pay date when the user started employment.
+            first_payday (date_class): First payday after the user started employment. 
             last_payday (date_class): The lastest date when the user got paid.
             holidays (list): A list of date class objects representing the holidays
                              applicable to the user.
@@ -73,9 +76,19 @@ class PayCycle:
 
         self.default_payday = WeekDayPlaceholder(self.first_payday.weekday())
 
-    def is_payday(self, date: date_class = None) -> bool:
+    def is_payday(self, date: date_class=date_class.today()) -> bool:
+        """Checks whether the given date is payday for the user.
+
+        Note: This assumes that users will accurately report their first payday.
+
+        Args:
+            date (date_class, optional): Any date. Defaults to date_class.today().
+
+        Returns:
+            bool: Return True if the date is a payday for the user. False Otherwise.
+        """
         if not date:
-            date = date_class.today()
+            date = 
         if (date < self.first_payday) or (date in self.holidays):
             return False
         if (date == self.first_payday) or (date == self.last_payday):

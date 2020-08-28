@@ -6,7 +6,7 @@ from datetime import (
 
 
 def get_valid_payday(holiday: date_class) -> date_class:
-    """Calculates the neareast available payday which is a valid weekday.
+    """Given a holiday, retturn the neareast available payday which is a valid weekday.
     """
     if not holiday:
         raise RuntimeError('No date passed in. A date is required to get a valid payday.')
