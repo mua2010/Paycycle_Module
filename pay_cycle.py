@@ -124,17 +124,16 @@ class PayCycle:
 
         return payday 
 
-    def get_next_x_paydays(self, x_number_of_paydays: int, date: date_class = None) -> list:
-        pass
-        # check if x is positive
+    def get_next_x_paydays(self, x_number_of_paydays: int, date: date_class=date_class.today()) -> list:
+        if x_number_of_paydays <= 0:
+            raise RuntimeError('The number of paydays to request needs to be a positive number.')
+        if date < self.first_payday:
+            date = self.first_payday
 
-        # if not date:
-        #     date = date_class.today()
+        next_x_paydays_list = []
+        for _ in range(x_number_of_paydays):
+            date = self.get_next_payday(date)
+            next_x_paydays_list.append(date)
 
-        # next_x_paydays_array = []
-        # for _ in range(x_number_of_paydays):
-        #     date = self.next_payday(date)
-        #     next_x_paydays_array.append(date)
-
-        # return next_x_paydays_array
+        return next_x_paydays_list
 
