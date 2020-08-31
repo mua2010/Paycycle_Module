@@ -28,7 +28,7 @@ class TestPayCycle(unittest.TestCase):
 
     def setUp(self):
         pay_cycle_type = 'BI_WEEKLY'
-        self.first_payday = date_class(2018,1,12)
+        self.first_payday = date_class(2019,1,11)
         last_payday = date_class(2020,8,21)
         default_payday = 'FRIDAY'
         self.pay_cycle = PayCycle(
@@ -118,10 +118,10 @@ class TestPayCycle(unittest.TestCase):
         """Positive Test case to check if a correct payday is returned
            when given date is <= first_pay of the user.
         """
-        date = date_class(2018,1,11)
+        date = date_class(2018,1,14)
         next_payday = self.pay_cycle.get_next_payday(date)
         assert next_payday == self.first_payday, \
-            f'Got {next_payday}, expected {self.first_payday}'
+            f'Got {next_payday}, expected {expected_next_payday}'
 
     def test_next_payday_positive2(self):
         """Positive Test case to check if the next payday is the very next day
@@ -203,7 +203,7 @@ class TestPayCycle(unittest.TestCase):
         """Positive Test case to check if a correct next bi-weekly payday is returned
            when the date passed in is the first payday.
         """
-        expected_next_payday = date_class(2018,1,26)
+        expected_next_payday = date_class(2019,1,25)
         next_payday = self.pay_cycle.get_next_payday(self.first_payday)
         assert next_payday == expected_next_payday, \
             f'Got {next_payday}, expected {expected_next_payday}'
@@ -249,13 +249,13 @@ class TestPayCycle(unittest.TestCase):
            of bi-weekly paydate objects are returned if the
            given date is not a payday.
         """
-        start_date = date_class(2018,11,1)
+        start_date = date_class(2022,11,3)
         x_number_of_paydays = 4
         expected_next_x_paydays = [
-            date_class(2018,11,2),
-            date_class(2018,11,16),
-            date_class(2018,11,30),
-            date_class(2018,12,14),
+            date_class(2022,11,10),
+            date_class(2022,11,25),
+            date_class(2022,12,9),
+            date_class(2022,12,23),
         ]
 
         next_x_paydays_list = self.pay_cycle.get_next_x_paydays(x_number_of_paydays, start_date)
