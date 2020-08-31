@@ -67,13 +67,7 @@ class PayCycle:
         self.default_payday = WeekPlaceholder.__getitem__(default_payday)
 
     def is_payday(self, date: date_class=date_class.today()) -> bool:
-        """Checks whether the given date is payday for the user.
-
-        Args:
-            date (date_class, optional): Any date. Defaults to today's date.
-
-        Returns:
-            bool: Return True if the date is a payday for the user. False Otherwise.
+        """Return True if the given date is payday for the user; False otherwise.
         """
         if (date < self.first_payday) or (date in self.holidays):
             return False
@@ -100,6 +94,8 @@ class PayCycle:
             return False
 
     def get_next_payday(self, date: date_class=date_class.today()) -> date_class:
+        """Given a date, find the next payday for the user.
+        """
         if not isinstance(date, date_class):
             raise RuntimeError('A date class object is required to find the next payday.')
         if date < self.first_payday:
@@ -117,7 +113,9 @@ class PayCycle:
             default_payday=self.default_payday
         )
 
-        # If the nearest payday i
+        # Edge Case: After skipping, If we land on the given 'date', 
+        #            that means the 'date' was a payday so, we need to 
+        #            add the frequency to get the next payday.
         if date == payday:
             if (holiday := (payday + self.frequency)) in self.holidays:
                 payday = get_valid_date(holiday)
