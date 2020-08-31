@@ -6,7 +6,7 @@ from datetime import (
 
 # Local Imports
 from helpers import (
-    get_valid_payday,
+    get_valid_date,
     pick_nearest_date
 )
 

@@ -4,9 +4,12 @@ from datetime import (
     timedelta
 )
 
+# Local Imports
+from enums import WeekPlaceholder
 
-def get_valid_payday(holiday: date_class) -> date_class:
-    """Given a holiday, return the nearest available payday which is a valid weekday.
+
+def get_valid_date(holiday: date_class) -> date_class:
+    """Given a holiday, return the nearest weekday that is not a holiday.
     """
     if not holiday:
         raise RuntimeError('No date passed in. A date is required to get a valid payday.')
@@ -38,7 +41,7 @@ def pick_nearest_date(
         date: date_class, 
         first_date: date_class, 
         second_date: date_class) -> date_class:
-    """Picks the first_date or second_date which ever is closer to 'date'.
+    """Return the first_date or second_date which ever is closer to 'date'.
     """
     if not (date or first_date or second_date):
         raise RuntimeError('No date passed in.')
@@ -55,40 +58,38 @@ def pick_nearest_date(
     else:
         return second_date
 
-def is_payday_helper(
-        date: date_class, 
+def get_nearest_payday(
+        date: date_class,
         frequency: timedelta,
-        curr_day: date_class, default_payday: date_class, 
-        holidays: list) -> bool:
-    """A Helper function for PayCycle.is_payday.
-       Leverges the provided config parameters to check if a date is a payday.
+        holidays: list,
+        nearest_given_payday: date_class,
+        default_payday: WeekPlaceholder) -> date_class:
+    """Leverge the given constraints to calculate a payday that is nearest
+       to 'date'.
     """
     holiday = None
-    if date < curr_day:
+    nearest_payday = nearest_given_payday
+    if date < nearest_payday:
         # Go Backward
-        while (curr_day >= date):
-            if curr_day == date:
-                return True
-            if curr_day.weekday() != default_payday.value:
-                # reset the curr_day to follow its original pay cycle
-                curr_day = holiday
+        while (nearest_payday > date):
+            if nearest_payday.weekday() != default_payday.value:
+                # reset the nearest_payday to follow its original pay cycle
+                nearest_payday = holiday
 
-            if (holiday := (curr_day - frequency)) in holidays:
-                curr_day = get_valid_payday(holiday)
+            if (holiday := (nearest_payday - frequency)) in holidays:
+                nearest_payday = get_valid_date(holiday)
             else:
-                curr_day -= frequency
-        return False
+                nearest_payday -= frequency
     else: 
         # Go Forward
-        while (curr_day <= date):
-            if curr_day == date:
-                return True
-            if curr_day.weekday() != default_payday.value:
-                # reset the curr_day to follow its original pay cycle
-                curr_day = holiday
+        while (nearest_payday < date):
+            if nearest_payday.weekday() != default_payday.value:
+                # reset the nearest_payday to follow its original pay cycle
+                nearest_payday = holiday
 
-            if (holiday := (curr_day + frequency)) in holidays:
-                curr_day = get_valid_payday(holiday)
+            if (holiday := (nearest_payday + frequency)) in holidays:
+                nearest_payday = get_valid_date(holiday)
             else:
-                curr_day += frequency
-        return False
+                nearest_payday += frequency
+
+    return nearest_payday
