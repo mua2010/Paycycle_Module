@@ -66,6 +66,8 @@ class PayCycle:
                                   ‘BI-WEEKLY, ‘SEMI-MONTHLY’, ‘MONTHLY’, or ‘WEEKLY’.
             first_payday (date_class): First payday after the user started employment. 
             last_payday (date_class): The lastest date when the user got paid.
+            default_payday (str): The day of the week when the user normally
+                                  gets paid.
             holidays (list): A list of date class objects representing the holidays
                              applicable to the user.
         """
@@ -126,7 +128,8 @@ class PayCycle:
 
         holiday = None
         curr_day = nearest_payday
-        if date < curr_day:
+        # TODO: replace curr day with nearest payday
+        if date < nearest_payday:
             # Go Backward
             while (curr_day >= date):
                 if curr_day == date:
@@ -164,6 +167,38 @@ class PayCycle:
         # Pick the payday that is nearest to 'date'
         nearest_payday = pick_nearest_date(date, self.first_payday, self.last_payday)
 
+        holiday = None
+        curr_day = nearest_payday
+        if date < nearest_payday:
+            # Go Backward
+            while (curr_day >= date):
+                # if curr_day == date:
+                #     return True
+                if curr_day.weekday() != self.default_payday.value:
+                    # reset the curr_day to follow its original pay cycle
+                    curr_day = holiday
+
+                if (holiday := (curr_day - self.frequency)) in self.holidays:
+                    curr_day = get_valid_payday(holiday)
+                else:
+                    curr_day -= self.frequency
+            # return False
+        else: 
+            # Go Forward
+            while (curr_day <= date):
+                # if curr_day == date:
+                #     return True
+                if curr_day.weekday() != self.default_payday.value:
+                    # reset the curr_day to follow its original pay cycle
+                    curr_day = holiday
+
+                if (holiday := (curr_day + self.frequency)) in self.holidays:
+                    curr_day = get_valid_payday(holiday)
+                else:
+                    curr_day += self.frequency
+            # return False
+        x = 5
+        return curr_day
 
 
         

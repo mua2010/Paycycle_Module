@@ -128,6 +128,11 @@ class TestPayCycle(unittest.TestCase):
         expected_next_payday = date_class(2019,7,12)
         next_payday = self.pay_cycle.next_payday(date)
         assert next_payday == expected_next_payday
+
+        date = date_class(2022,11,24)
+        expected_next_payday = date_class(2022,11,25)
+        next_payday = self.pay_cycle.next_payday(date)
+        assert next_payday == expected_next_payday
     
     def test_next_payday_positive3(self):
         """Positive Test case to check if the next payday is on a thursday.
@@ -136,7 +141,7 @@ class TestPayCycle(unittest.TestCase):
         expected_next_payday = date_class(2020,12,24)
         next_payday = self.pay_cycle.next_payday(date)
         assert next_payday == expected_next_payday
-        assert WeekDayPlaceholder(next_payday.weekday()) == WeekDayPlaceholder.THURSDAY
+        assert WeekPlaceholder(next_payday.weekday()) == WeekPlaceholder.THURSDAY
     
     def test_next_payday_positive4(self):
         """Positive Test case to check if a correct payday from the next year
@@ -157,6 +162,21 @@ class TestPayCycle(unittest.TestCase):
 
         date = date_class(2019,1,12)
         expected_next_payday = date_class(2019,1,25)
+        next_payday = self.pay_cycle.next_payday(date)
+        assert next_payday == expected_next_payday
+
+        date = date_class(2022,11,10)
+        expected_next_payday = date_class(2022,11,25)
+        next_payday = self.pay_cycle.next_payday(date)
+        assert next_payday == expected_next_payday
+        
+        date = date_class(2022,11,25)
+        expected_next_payday = date_class(2022,12,9)
+        next_payday = self.pay_cycle.next_payday(date)
+        assert next_payday == expected_next_payday
+
+        date = date_class(2022,11,26)
+        expected_next_payday = date_class(2022,12,9)
         next_payday = self.pay_cycle.next_payday(date)
         assert next_payday == expected_next_payday
 
