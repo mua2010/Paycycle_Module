@@ -113,9 +113,9 @@ class PayCycle:
             default_payday=self.default_payday
         )
 
-        # Edge Case: After skipping, If we land on the given 'date', 
-        #            that means the 'date' was a payday so, we need to 
-        #            add the frequency to get the next payday.
+        # Edge Case: After skipping, If we land on the given 'date' or before, 
+        #            the given date so, we need to add the frequency to get 
+        #            the next payday.
         if date >= payday:
             if (holiday := (payday + self.frequency)) in self.holidays:
                 payday = get_valid_date(holiday)
