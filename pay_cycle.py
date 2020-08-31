@@ -15,10 +15,6 @@ ASSUMING THE FOLLOWING DATA WILL BE PROVIDED
         'default_payday': 'FRIDAY'
     }’
 
-2.  Tracking Holidays:
-        - https://stackoverflow.com/questions/2394235/detecting-a-us-holiday
-        - https://pypi.org/project/holidays/
-
 '''
 
 
@@ -42,7 +38,7 @@ from helpers import (
 class PayCycleType(Enum):
     BI_WEEKLY = timedelta(weeks=2)
 
-class WeekDayPlaceholder(Enum):
+class WeekPlaceholder(Enum):
     MONDAY = 0
     TUESDAY = 1
     WEDNESDAY = 2
@@ -58,6 +54,7 @@ class PayCycle:
     def __init__(self, 
                  pay_cycle_type: str, 
                  first_payday: date_class, last_payday: date_class,
+                 default_payday: str,
                  holidays: list):
         """Constructor for PayCycle Class.
 
@@ -77,8 +74,7 @@ class PayCycle:
         self.last_payday = last_payday
         self.holidays = holidays
 
-        # TODO: the user will supply the default payyday FIX THIS SHIT
-        self.default_payday = WeekDayPlaceholder(self.first_payday.weekday())
+        self.default_payday = WeekPlaceholder.__getitem__(default_payday)
 
     def is_payday(self, date: date_class=date_class.today()) -> bool:
         """Checks whether the given date is payday for the user.

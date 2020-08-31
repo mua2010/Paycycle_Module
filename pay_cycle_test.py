@@ -8,7 +8,7 @@ import logging
 # Local Imports
 from pay_cycle import (
     PayCycle, 
-    WeekDayPlaceholder
+    WeekPlaceholder
 )
 
 # Third-Party Imports
@@ -27,12 +27,13 @@ class TestPayCycle(unittest.TestCase):
 
     def setUp(self):
         pay_cycle_type = 'BI_WEEKLY'
-        # ASSUMING THE PAYDAY IS A FRIDAY
         self.first_payday = date_class(2019,1,11)
         last_payday = date_class(2020,8,21)
+        default_payday = 'FRIDAY'
         self.pay_cycle = PayCycle(
             pay_cycle_type=pay_cycle_type,
             first_payday=self.first_payday, last_payday=last_payday,
+            default_payday=default_payday,
             holidays=US_HOLIDAYS
         )
 
@@ -196,6 +197,6 @@ class TestPayCycle(unittest.TestCase):
     #     assert len(next_x_paydays_list) == 5
     #     assert next_x_paydays_list == expected_next_x_paydays
 
-
+# REMOVE THIS
 if __name__ == '__main__':
     unittest.main(verbosity=2)
