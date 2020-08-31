@@ -2,6 +2,7 @@
 ======
 NOTES:
 ======
+ASSUMING THE FOLLOWING DATA WILL BE PROVIDED
 1.  pay_cycle_date = '{
         ‘pay_cycle_type’: 'BI_WEEKLY',
         ‘first_payday': ‘2019-01-11’,
@@ -10,7 +11,8 @@ NOTES:
             ‘New Year's Day’,
             …
             'Christmas Day'
-        ]
+        ],
+        'default_payday': 'FRIDAY'
     }’
 
 2.  Tracking Holidays:
@@ -75,6 +77,7 @@ class PayCycle:
         self.last_payday = last_payday
         self.holidays = holidays
 
+        # TODO: the user will supply the default payyday FIX THIS SHIT
         self.default_payday = WeekDayPlaceholder(self.first_payday.weekday())
 
     def is_payday(self, date: date_class=date_class.today()) -> bool:
@@ -164,6 +167,7 @@ class PayCycle:
 
         # Pick the payday that is nearest to 'date'
         nearest_payday = pick_nearest_date(date, self.first_payday, self.last_payday)
+
 
 
         

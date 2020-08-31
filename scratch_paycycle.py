@@ -1,11 +1,114 @@
 
-
+import calendar
 from datetime import (
     datetime,
     timedelta,
     date as date_class
 )
+from helpers import pick_nearest_date
+from pay_cycle import WeekDayPlaceholder
 
+first_payday = date_class(2019,1,11)
+last_payday = date_class(2020,12,23)
+
+def next_payday(date: date_class=date_class.today()) -> date_class:
+        if not isinstance(date, date_class):
+            raise RuntimeError('A date class object is required to find the next payday.')
+        if date <= first_payday:
+            return first_payday
+
+        # Pick the payday that is nearest to 'date'
+        nearest_payday = pick_nearest_date(date, first_payday, last_payday)
+
+        import calendar
+        from dateutil.relativedelta import relativedelta
+        # calendar.isleap(year)
+        '''
+        first_payday = date_class(2019,1,11)
+        last_payday = date_class(2020,12,24)
+        default_payday = Friday = 4
+        date=date((2022),1,1)
+        nearest_payday = pick_nearest_date(date, first_payday, last_payday)
+        nearest_payday is lastpayday
+
+
+        '''
+        time_difference = relativedelta(date, nearest_payday)
+        difference_in_years = time_difference.years
+        if difference_in_years > 0:
+            # relativedelta takes care of the leap year
+            curr_date = nearest_payday + relativedelta(weeks=52*difference_in_years)
+        time_difference = relativedelta(date, curr_date)
+        difference_in_months = time_difference.months 
+        if difference_in_months > 0:
+            # relativedelta takes care of the leap year
+            curr_date = nearest_payday + relativedelta(weeks=difference_in_months*4)
+        time_difference = relativedelta(date, curr_date)
+        difference_in_weeks = time_difference.weeks 
+        if difference_in_weeks > 0:
+            # relativedelta takes care of the leap year
+            curr_date = nearest_payday + relativedelta(weeks=difference_in_weeks)
+        time_difference = relativedelta(date, curr_date)
+        difference_in_days = time_difference.days 
+        if difference_in_days > 0:
+            # relativedelta takes care of the leap year
+            curr_date = nearest_payday + relativedelta(weeks=difference_in_weeks)
+
+
+
+
+        start = date_class(2020,12,24) # Thursday
+        default_payday = 4 # Friday
+        if curr_day.weekday() != default_payday:
+            # reset the curr_day to follow its original pay cycle
+            # a function which will goto to the default payday
+            # curr_day = reset/get_to_default_payday()
+        
+
+
+        time_difference = relativedelta(date, nearest_payday)
+        difference_in_years = time_difference.years
+        if difference_in_years > 0:
+            # relativedelta takes care of the leap year
+            
+            curr_date = nearest_payday + relativedelta(weeks=52*difference_in_years)
+        
+
+        if (holiday := (curr_day + relativedelta(weeks=52)) in self.holidays:
+            curr_day = get_valid_payday(holiday)
+        else:
+            curr_day += self.frequency
+        
+
+        # fucntions
+        # 1. move by years
+        # 2. move by months(do 4 weeks)
+        # 3. move by weeks (1 week)
+        # 4. move by days (1 day)
+        
+
+date=date_class(2022,11,23)
+print(next_payday(date))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
 #           YYYY-MM-DD
 # first_pd = '2019-01-11'
 first_pd = date_class(2020, 1, 10)
@@ -76,7 +179,7 @@ print(get_next_available_date(holiday))
 
 
 
-
+"""
 
 
 
