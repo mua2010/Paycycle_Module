@@ -99,12 +99,26 @@ class PayCycle:
 
         payday = self.first_payday
 
-        # It's possible that payday changes because the default payday was a holiday
+        # Calculating the number of weeks between payday and 'date'
+        difference_in_weeks = ((date - payday).days) / 7
+
+        # It's possible that payday changes because it was a holiday on the day
+        # when the user gets paid normally i.e default payday
         # if the payday is not the default payday
         if payday.weekday() != self.default_payday.value:
             # then, reset the payday to follow its original pay cycle
             offset = self.default_payday.value - payday.weekday()
             payday += timedelta(days=offset)
+
+        
+
+        # If difference_in_weeks is a whole number and even, then date is a pay date.
+        if difference_in_weeks % 2 == 0:
+            return True
+        return False
+
+
+        
 
         # Calculating the difference between payday and 'date'
         difference_in_dates = (date - payday)
@@ -122,6 +136,9 @@ class PayCycle:
     def get_next_payday(self, date: date_class=date_class.today()) -> date_class:
         """Given a date, find the next payday for the user.
         """
+
+        #TODO: IF I can get ispayday working, then next payday will be calling is payday until next 14days
+
         if not isinstance(date, date_class):
             raise RuntimeError('A date class object is required to find the next payday.')
         if date < self.first_payday:

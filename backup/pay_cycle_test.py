@@ -120,40 +120,66 @@ class TestPayCycle(unittest.TestCase):
         assert is_payday == True
 
 
-    def test_is_payday_positive1(self):
+    def test_is_payday_positive5(self):
         """Positive Test case to check a valid payday when a payday
            becomes Thursday because Friday was a holiday.
         """
-        date_to_check = date_class(2021,1,8)
+        date_to_check = date_class(2020,12,24)
         is_payday = self.pay_cycle.is_payday(date_to_check)
         assert is_payday == True
 
-        date_to_check = date_class(2022,11,25)
+        date_to_check = date_class(2021,12,23)
+        is_payday = self.pay_cycle.is_payday(date_to_check)
+        assert is_payday == True
+
+        date_to_check = date_class(2022,11,10)
         is_payday = self.pay_cycle.is_payday(date_to_check)
         assert is_payday == True
 
     def test_is_payday_negative0(self):
-        """Negative Test case to check if a date before first_day is rejected.
+        """Negative Test case to check a date before first_day.
         """
-        date_to_check = date_class(2019,1,10)
+        date_to_check = date_class(2019,1,24)
+        is_payday = self.pay_cycle.is_payday(date_to_check)
+        assert is_payday == False
+
+        date_to_check = date_class(2018,12,27)
+        is_payday = self.pay_cycle.is_payday(date_to_check)
+        assert is_payday == False
+
+        date_to_check = date_class(2018,2,28)
         is_payday = self.pay_cycle.is_payday(date_to_check)
         assert is_payday == False
 
     def test_is_payday_negative1(self):
-        """Negative Test case to check if holiday is not a payday.
+        """Negative Test case to check if holiday on default payday
+           is not a payday.
         """
         date_to_check = date_class(2020,12,25)
         is_payday = self.pay_cycle.is_payday(date_to_check)
         assert is_payday == False
 
-    def test_is_payday_negative2(self):
-        """Negative Test case to check wrong paydays.
-        """
-        date_to_check = date_class(2019,11,22)
+        date_to_check = date_class(2021,12,24)
         is_payday = self.pay_cycle.is_payday(date_to_check)
         assert is_payday == False
 
-        date_to_check = date_class(2020,12,18)
+        date_to_check = date_class(2022,11,11)
+        is_payday = self.pay_cycle.is_payday(date_to_check)
+        assert is_payday == False
+
+    def test_is_payday_negative2(self):
+        """Negative Test case to check default paydays in between
+           biweekly paydays.
+        """
+        date_to_check = date_class(2018,11,23)
+        is_payday = self.pay_cycle.is_payday(date_to_check)
+        assert is_payday == False
+
+        date_to_check = date_class(2019,1,18)
+        is_payday = self.pay_cycle.is_payday(date_to_check)
+        assert is_payday == False
+
+        date_to_check = date_class(2021,12,17)
         is_payday = self.pay_cycle.is_payday(date_to_check)
         assert is_payday == False
 
