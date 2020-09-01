@@ -1,3 +1,5 @@
 env/
 __pycache__
+launch.json
 settings.json
+win-env/
