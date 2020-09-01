@@ -45,12 +45,12 @@ tradeoffs and benefits of different ideas
 
 # Standard Library Imports
 from datetime import (
-    date as date_class,
-    timedelta
+    date as date_class
 )
 
 # Local Imports
 from helpers import (
+    pick_nearest_date,
     get_nearest_payday,
     get_valid_date
 )
@@ -66,7 +66,7 @@ class PayCycle:
 
     def __init__(self, 
                  pay_cycle_type: str, 
-                 first_payday: date_class,
+                 first_payday: date_class, last_payday: date_class,
                  default_payday: str,
                  holidays: list):
         """Constructor for PayCycle Class.
@@ -78,6 +78,7 @@ class PayCycle:
             pay_cycle_type (str): Type of user's pay cycle. 
                                   ‘BI-WEEKLY, ‘SEMI-MONTHLY’, ‘MONTHLY’, or ‘WEEKLY’.
             first_payday (date_class): First payday after the user started employment. 
+            last_payday (date_class): The lastest date when the user got paid.
             default_payday (str): The day of the week when the user normally
                                   gets paid.
             holidays (list): A list of date class objects representing the holidays
@@ -85,6 +86,7 @@ class PayCycle:
         """
         self.frequency = PayCycleType[pay_cycle_type].value
         self.first_payday = first_payday
+        self.last_payday = last_payday
         self.holidays = holidays
 
         self.default_payday = WeekPlaceholder.__getitem__(default_payday)
@@ -92,32 +94,29 @@ class PayCycle:
     def is_payday(self, date: date_class=date_class.today()) -> bool:
         """Return True if the given date is payday for the user; False otherwise.
         """
-        if date == self.first_payday:
+        if (date < self.first_payday) or (date in self.holidays):
+            return False
+        if (date == self.first_payday) or (date == self.last_payday):
             return True
-        if date in self.holidays:
+        
+        # Pick the given payday that is nearest to 'date'
+        nearest_given_payday = pick_nearest_date(date, self.first_payday, self.last_payday)
+
+        # TODO: Can be made faster by checking difference and skipping months/years
+
+        # skip to the payday nearest to the 'date'
+        payday = get_nearest_payday(
+            date=date,
+            frequency=self.frequency,
+            holidays=self.holidays,
+            nearest_given_payday=nearest_given_payday,
+            default_payday=self.default_payday
+        )
+
+        if date == payday:
+            return True
+        else:
             return False
-
-        payday = self.first_payday
-
-        # It's possible that payday changes because the default payday was a holiday
-        # if the payday is not the default payday
-        if payday.weekday() != self.default_payday.value:
-            # then, reset the payday to follow its original pay cycle
-            offset = self.default_payday.value - payday.weekday()
-            payday += timedelta(days=offset)
-
-        # Calculating the difference between payday and 'date'
-        difference_in_dates = (date - payday)
-
-        # Calculating the number of days between payday and 'date'
-        difference_in_days = (date - payday).days
-
-        if date.weekday() != self.default_payday.value:
-            if (date + timedelta(days=1)) in self.holidays:
-                return True
-            return False
-
-        return difference_in_days % self.frequency.days == 0
 
     def get_next_payday(self, date: date_class=date_class.today()) -> date_class:
         """Given a date, find the next payday for the user.

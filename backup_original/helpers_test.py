@@ -23,8 +23,7 @@ class TestHelpers(unittest.TestCase):
         holiday = date_class(2020, 12, 25)
         expected_valid_payday = date_class(2020, 12, 24)
         valid_payday = get_valid_date(holiday)
-        assert valid_payday == expected_valid_payday, \
-            f'Got {valid_payday}, expected {expected_valid_payday}'
+        assert valid_payday == expected_valid_payday
 
     def test_get_valid_date_positive1(self):
         """Positive Test case to check if Nov 27th, 2020 is a valid payday 
@@ -33,8 +32,7 @@ class TestHelpers(unittest.TestCase):
         holiday = date_class(2020, 11, 27)
         expected_valid_payday = date_class(2020, 11, 26)
         valid_payday = get_valid_date(holiday)
-        assert valid_payday == expected_valid_payday, \
-            f'Got {valid_payday}, expected {expected_valid_payday}'
+        assert valid_payday == expected_valid_payday
 
     def test_get_valid_date_negative0(self):
         """Negative Test case to check if Exception is raised if 
@@ -54,6 +52,32 @@ class TestHelpers(unittest.TestCase):
         except Exception as exc:
             exception = exc.__class__
         assert exception == expected_exception
+
+    # TESTS pick_nearest_date
+
+    def test_pick_nearest_date_positive0(self):
+        """Positive Test case to check if correct payday is picked
+           given a date closer to first payday.
+        """
+        date = date_class(2020,3,1)
+        first_date = date_class(2020,1,1)
+        second_date = date_class(2020,12,31)
+
+        nearest_payday = pick_nearest_date(date, first_date, second_date)
+        
+        assert nearest_payday == first_date
+
+    def test_pick_nearest_date_positive1(self):
+        """Positive Test case to check if correct payday is picked
+           given a date closer to last payday.
+        """
+        date = date_class(2020,11,1)
+        first_date = date_class(2020,1,1)
+        second_date = date_class(2020,12,31)
+
+        nearest_payday = pick_nearest_date(date, first_date, second_date)
+        
+        assert nearest_payday == second_date
 
 
 if __name__ == '__main__':

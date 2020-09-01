@@ -37,6 +37,26 @@ def get_valid_date(holiday: date_class) -> date_class:
     else:
         return holiday + timedelta(days=num_of_days_after_holiday)
 
+def pick_nearest_date(
+        date: date_class, 
+        first_date: date_class, 
+        second_date: date_class) -> date_class:
+    """Return the first_date or second_date which ever is closer to 'date'.
+    """
+    if not (date or first_date or second_date):
+        raise RuntimeError('No date passed in.')
+    if not (isinstance(date, date_class)
+            or isinstance(first_date, date_class)
+            or isinstance(second_date, date_class)):
+        raise RuntimeError('A date class object was not passed.')
+
+    num_of_days_to_first_date = abs((date - first_date).days)
+    num_of_days_to_second_date = abs((date - second_date).days)
+
+    if num_of_days_to_first_date < num_of_days_to_second_date:
+        return first_date
+    else:
+        return second_date
 
 def get_nearest_payday(
         date: date_class,
