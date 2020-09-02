@@ -42,15 +42,24 @@ def get_nearest_payday(
         date: date_class,
         frequency: timedelta,
         holidays: list,
-        payday: date_class,
+        given_payday: date_class,
         default_payday: WeekPlaceholder) -> date_class:
     """Leverage the given constraints to calculate a payday that is nearest
        to 'date'.
     """
     holiday = None
-    
-    def __get_respective_payday(_payday, _frequency):
+
+    # if payday.weekday() != self.default_payday.value:
+    #     # then, reset the payday to follow its original pay cycle
+    #     offset = self.default_payday.value - payday.weekday()
+    #     payday += timedelta(days=offset) 
+    #     holiday = 
+
+    _payday = given_payday
+
+    def __update_payday( _frequency: timedelta):
         nonlocal holiday
+        nonlocal _payday
         if _payday.weekday() != default_payday.value:
             # reset the payday to follow its original pay cycle
             _payday = holiday
@@ -62,42 +71,19 @@ def get_nearest_payday(
             _payday = get_valid_date(holiday)
         else:
             _payday += _frequency
-        return _payday
 
-    # holiday = None
-    if date < payday:
-        # Go Backward
+        # _payday += _frequency
 
+        # if _payday.weekday() != default_payday.value:
+
+    
+    if date < given_payday:  # Go Backward
         # change frequency to negative
         frequency = timedelta(days=-1*frequency.days)
+        while (_payday > date):
+            __update_payday(_frequency=frequency)
+    else: # Go Forward
+        while (_payday < date):
+            __update_payday(_frequency=frequency)
 
-        while (payday > date):
-            payday = __get_respective_payday(_payday=payday, _frequency=frequency)
-            # if payday.weekday() != default_payday.value:
-            #     # reset the payday to follow its original pay cycle
-            #     payday = holiday
-
-            # # If we land on a payday that is a holiday, we need to get a valid 
-            # # payday. The valid payday could be the the very next day or
-            # # the previous day (if the next weekday is a Monday)
-            # if (holiday := (payday - frequency)) in holidays:
-            #     payday = get_valid_date(holiday)
-            # else:
-            #     payday -= frequency
-    else: 
-        # Go Forward
-        while (payday < date):
-            payday = __get_respective_payday(_payday=payday, _frequency=frequency)
-            # if payday.weekday() != default_payday.value:
-            #     # reset the payday to follow its original pay cycle
-            #     payday = holiday
-
-            # # If we land on a payday that is a holiday, we need to get a valid 
-            # # payday. The valid payday could be the the very next day or
-            # # the previous day (if the next weekday is a Monday)
-            # if (holiday := (payday + frequency)) in holidays:
-            #     payday = get_valid_date(holiday)
-            # else:
-            #     payday += frequency
-
-    return payday
+    return _payday

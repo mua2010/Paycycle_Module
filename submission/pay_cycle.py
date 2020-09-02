@@ -1,47 +1,11 @@
 '''
-ASSUMING THE FOLLOWING DATA WILL BE PROVIDED
-
-pay_cycle_date = '{
-    ‘pay_cycle_type’: 'BI_WEEKLY',
-    ‘first_payday': ‘2019-01-11’,
-    'last_payday': '2020-12-24',
-    ‘Holidays’: [
-        list of holidays applicable to the user
-    ],
-    'default_payday': 'FRIDAY'
-}’
-
-TODO:
-originally I  had a  very simple soultion - doing module 14 
-but I incorptrted holidays
-its this 3 lines of code
-
-WRITE ALL THE ASSUMPTION
-normally, if I module by 14 i end up  a 0, it is a payday.
-but there is holidays
-1. I decided to store last payday 
-
-2. write down every single edge case - make a list
-    can I priortize the list
-
-for the sake of simiplicity i ginore holidays,
-but we could incoroprate them by edge case
-
-effort vs impact
-confidence
-Brian Wong
-8:32 PM
-write down every single real world consideration
-Brian Wong
-8:34 PM
-for the sake of simplicity
-but we could incorporate them by ....
-Brian Wong
-8:38 PM
-tradeoffs and benefits of different ideas
+Assuming the following data will be provided
+1. pay_cycle_type
+2. first_payday
+3. list of holidays
+4. default_payday
 
 '''
-
 
 # Standard Library Imports
 from datetime import (
@@ -96,14 +60,12 @@ class PayCycle:
         if date in self.holidays:
             return False
         
-        # TODO: Can be made faster by checking difference and skipping months/years
-
         # skip to the payday nearest to the 'date'
         payday = get_nearest_payday(
             date=date,
             frequency=self.frequency,
             holidays=self.holidays,
-            payday=self.first_payday,
+            given_payday=self.first_payday,
             default_payday=self.default_payday
         )
 
@@ -115,20 +77,12 @@ class PayCycle:
     def get_next_payday(self, date: date_class=date_class.today()) -> date_class:
         """Given a date, find the next payday for the user.
         """
-        if not isinstance(date, date_class):
-            raise RuntimeError('A date class object is required to find the next payday.')
-        if date < self.first_payday:
-            return self.first_payday
-
-        # Pick the given payday that is nearest to 'date'
-        nearest_given_payday = pick_nearest_date(date, self.first_payday, self.last_payday)
-
         # skip to the payday nearest to the 'date'
         payday = get_nearest_payday(
             date=date,
             frequency=self.frequency,
             holidays=self.holidays,
-            nearest_given_payday=nearest_given_payday,
+            given_payday=self.first_payday,
             default_payday=self.default_payday
         )
 
@@ -143,9 +97,6 @@ class PayCycle:
         return payday 
 
     def get_next_x_paydays(self, x_number_of_paydays: int, date: date_class=date_class.today()) -> list:
-        if x_number_of_paydays <= 0:
-            raise RuntimeError('The number of paydays to request needs to be a positive number.')
-        
         next_x_paydays_list = []
         if date < self.first_payday:
             date = self.first_payday
