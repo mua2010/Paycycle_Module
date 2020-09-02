@@ -8,7 +8,7 @@ from datetime import (
 from enums import WeekPlaceholder
 
 
-def get_valid_business_day(date: date_class, holidays) -> date_class:
+def get_nearest_business_day(date: date_class, holidays: list) -> date_class:
     """Given a date, return the nearest business day that could be a
        potential payday.
        Note: For the days in a week, placeholder for Monday is 0 and Sunday is 6
@@ -36,23 +36,31 @@ def get_valid_business_day(date: date_class, holidays) -> date_class:
     return date
     
 
+def reset_payday_to_default_payday(payday: date_class, default_payday: str):
+    """Updates the payday to default payday by computing the
+       difference between payday and default payday.
+    """
+    offset = default_payday.value - payday.weekday()
+    return payday + timedelta(days=offset)
+
+
 def update_payday(
         payday: date_class,
         frequency: timedelta,
         holidays: list,
         default_payday: date_class):
-    """Adds frequency to the payday and updates the payday by leveraging
-       the given holidays and default_payday.
+    """Updates the payday with the frequency by leveraging
+       the given holidays and default payday.
     """
+
     if payday.weekday() != default_payday.value:
-        offset = default_payday.value - payday.weekday()
-        payday += timedelta(days=offset)
+        payday = reset_payday_to_default_payday(payday, default_payday)
         
     payday += frequency
 
-    # keep finding a valid payday
+    # After updating payday with frequency
     if payday in holidays:
-        payday = get_valid_business_day(payday, holidays)
+        payday = get_nearest_business_day(payday, holidays)
     
     return payday
 

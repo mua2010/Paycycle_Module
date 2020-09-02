@@ -15,7 +15,7 @@ from datetime import (
 # Local Imports
 from helpers import (
     get_nearest_payday,
-    get_valid_business_day,
+    get_nearest_business_day,
     update_payday
 )
 from enums import PayCycleType, WeekPlaceholder
