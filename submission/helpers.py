@@ -53,12 +53,14 @@ def update_payday(
        the given holidays and default payday.
     """
 
+    # While updating paydays, making sure the pay cycle is maintained.
     if payday.weekday() != default_payday.value:
         payday = reset_payday_to_default_payday(payday, default_payday)
         
     payday += frequency
 
-    # After updating payday with frequency
+    # After updating payday with the frequency, if the payday is a holiday,
+    # update the payday again to the nearest available business day.
     if payday in holidays:
         payday = get_nearest_business_day(payday, holidays)
     

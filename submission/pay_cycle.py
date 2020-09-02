@@ -15,7 +15,6 @@ from datetime import (
 # Local Imports
 from helpers import (
     get_nearest_payday,
-    get_nearest_business_day,
     update_payday
 )
 from enums import PayCycleType, WeekPlaceholder
@@ -84,9 +83,10 @@ class PayCycle:
             default_payday=self.default_payday
         )
 
-        # Edge Case: After skipping, If we land on the given 'date' or before 
-        # then we need to add the frequency to get the next payday.
-        if date >= _payday:
+        # After skipping, If we land on a payday that is either 
+        # equal to or less than the given 'date'
+        # then we need to add the frequency (once) to get the next payday.
+        if _payday <= date:
             _payday = update_payday(
                 payday=_payday,
                 frequency=self.frequency,

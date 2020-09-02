@@ -368,7 +368,3 @@ class TestPayCycle(unittest.TestCase):
             f'Got {len(next_x_paydays_list)}, expected {x_number_of_paydays}'
         assert next_x_paydays_list == expected_next_x_paydays, \
             f'Got {next_x_paydays_list}, expected {expected_next_x_paydays}'
-
-
-if __name__ == '__main__':
-    unittest.main(verbosity=2)
