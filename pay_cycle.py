@@ -97,10 +97,32 @@ class PayCycle:
         if date in self.holidays:
             return False
 
-        payday = self.first_payday
+        payday = get_nearest_payday(
+            date=date,
+            frequency=self.frequency,
+            holidays=self.holidays,
+            nearest_given_payday=self.first_payday,
+            default_payday=self.default_payday
+        )
 
-        # Calculating the number of weeks between payday and 'date'
-        difference_in_weeks = ((date - payday).days) / 7
+        if date == payday:
+            return True
+        else:
+            return False
+
+            
+        # It's possible that date is not the default payday
+        # for the user because it was was holiday on the default payday
+        # In this case, check if the default payday in that week was
+        # a holiday.
+        if date.weekday() != self.default_payday.value:
+            # if yes, reset the date to follow its original pay cycle
+            offset = self.default_payday.value - date.weekday()
+            date_after_offset = date + timedelta(days=offset)
+            if date_after_offset in self.holidays:
+                return True 
+
+        payday = self.first_payday
 
         # It's possible that payday changes because it was a holiday on the day
         # when the user gets paid normally i.e default payday
@@ -108,30 +130,15 @@ class PayCycle:
         if payday.weekday() != self.default_payday.value:
             # then, reset the payday to follow its original pay cycle
             offset = self.default_payday.value - payday.weekday()
-            payday += timedelta(days=offset)
+            payday += timedelta(days=offset)    
 
+        # Calculating the number of weeks between payday and 'date'
+        difference_in_weeks = ((date - payday).days) / 7
         
-
         # If difference_in_weeks is a whole number and even, then date is a pay date.
         if difference_in_weeks % 2 == 0:
             return True
         return False
-
-
-        
-
-        # Calculating the difference between payday and 'date'
-        difference_in_dates = (date - payday)
-
-        # Calculating the number of days between payday and 'date'
-        difference_in_days = (date - payday).days
-
-        if date.weekday() != self.default_payday.value:
-            if (date + timedelta(days=1)) in self.holidays:
-                return True
-            return False
-
-        return difference_in_days % self.frequency.days == 0
 
     def get_next_payday(self, date: date_class=date_class.today()) -> date_class:
         """Given a date, find the next payday for the user.

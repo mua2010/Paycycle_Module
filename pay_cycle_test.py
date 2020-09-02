@@ -32,7 +32,7 @@ NOTE: I am taking an example calendar for 2018-2022 for testing.
 class TestPayCycle(unittest.TestCase):
 
     def setUp(self):
-        pay_cycle_type = 'BI_WEEKLY'
+        pay_cycle_type = 'WEEKLY'
         self.first_payday = date_class(2019,1,25)
         default_payday = 'FRIDAY'
         self.pay_cycle = PayCycle(
@@ -64,6 +64,14 @@ class TestPayCycle(unittest.TestCase):
         assert is_payday == True
 
         date_to_check = date_class(2018,12,28)
+        is_payday = self.pay_cycle.is_payday(date_to_check)
+        assert is_payday == True
+
+
+        date_to_check = date_class(2018,12,7)
+        is_payday = self.pay_cycle.is_payday(date_to_check)
+        assert is_payday == True
+        date_to_check = date_class(2018,12,21)
         is_payday = self.pay_cycle.is_payday(date_to_check)
         assert is_payday == True
 
@@ -133,6 +141,16 @@ class TestPayCycle(unittest.TestCase):
         assert is_payday == True
 
         date_to_check = date_class(2022,11,10)
+        is_payday = self.pay_cycle.is_payday(date_to_check)
+        assert is_payday == True
+    
+    def test_is_payday_positive6(self):
+        """Positive Test case to check paydays when the first payday
+           was on a thursday because Friday was a holiday.
+        """
+        # Overriding first_payday
+        self.first_payday = date_class(2020,12,24)
+        date_to_check = date_class(2021,1,8)
         is_payday = self.pay_cycle.is_payday(date_to_check)
         assert is_payday == True
 
@@ -347,4 +365,8 @@ class TestPayCycle(unittest.TestCase):
 
 # REMOVE THIS
 if __name__ == '__main__':
+    import time
+    start = time.time()
     unittest.main(verbosity=2)
+    end = time.time()
+    print(end - start)
