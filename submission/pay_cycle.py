@@ -87,17 +87,12 @@ class PayCycle:
         )
 
         # Edge Case: After skipping, If we land on the given 'date' or before 
-        #            then we need to add the frequency to get the next payday.
+        # then we need to add the frequency to get the next payday.
         if date >= _payday:
             _payday += self.frequency
-
             # keep finding a valid payday
             if _payday in self.holidays:
                 _payday = get_valid_business_day(_payday, self.holidays)
-            # if (holiday := (payday + self.frequency)) in self.holidays:
-            #     payday = get_valid_date(holiday)
-            # else:
-            #     payday += self.frequency
 
         return _payday 
 

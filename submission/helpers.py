@@ -46,23 +46,10 @@ def get_nearest_payday(
     """Leverage the given constraints to calculate a payday that is nearest
        to 'date'.
     """
-    holiday = None
     _payday = given_payday
 
     def __update_payday( _frequency: timedelta):
-        nonlocal holiday
         nonlocal _payday
-        # if _payday.weekday() != default_payday.value:
-        #     # reset the payday to follow its original pay cycle
-        #     _payday = holiday
-
-        # # If we land on a payday that is a holiday, we need to get a valid 
-        # # payday. The valid payday could be the the very next day or
-        # # the previous day (if the next weekday is a Monday)
-        # if (holiday := (_payday + _frequency)) in holidays:
-        #     _payday = get_valid_date(holiday)
-        # else:
-        #     _payday += _frequency
 
         if _payday.weekday() != default_payday.value:
             offset = default_payday.value - _payday.weekday()
@@ -74,8 +61,6 @@ def get_nearest_payday(
         if _payday in holidays:
             _payday = get_valid_business_day(_payday, holidays)
         
-
-    
     if date < given_payday:  # Go Backward
         # change frequency to negative
         frequency = timedelta(days=-1*frequency.days)
