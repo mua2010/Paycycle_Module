@@ -5,6 +5,7 @@ Assuming the following data will be provided
 3. list of holidays
 4. default_payday
 
+The description/readme is "Readme Pay Cycle Perpay.pdf"
 '''
 
 # Standard Library Imports
