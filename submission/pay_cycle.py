@@ -103,7 +103,7 @@ class PayCycle:
             date=date,
             frequency=self.frequency,
             holidays=self.holidays,
-            nearest_given_payday=self.first_payday,
+            payday=self.first_payday,
             default_payday=self.default_payday
         )
 

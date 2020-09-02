@@ -96,21 +96,7 @@ class PayCycle:
             return True
         if date in self.holidays:
             return False
-
-        payday = get_nearest_payday(
-            date=date,
-            frequency=self.frequency,
-            holidays=self.holidays,
-            nearest_given_payday=self.first_payday,
-            default_payday=self.default_payday
-        )
-
-        if date == payday:
-            return True
-        else:
-            return False
-
-            
+        
         # It's possible that date is not the default payday
         # for the user because it was was holiday on the default payday
         # In this case, check if the default payday in that week was

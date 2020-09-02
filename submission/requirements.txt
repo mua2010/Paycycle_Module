@@ -1,1 +1,2 @@
-holidays==0.10.3 
+holidays==0.10.3
+parameterized==0.7.4
