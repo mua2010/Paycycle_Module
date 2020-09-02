@@ -35,7 +35,25 @@ def get_valid_business_day(date: date_class, holidays) -> date_class:
             date += timedelta(days=num_of_days_after_holiday)
     return date
     
+def update_payday(
+        payday: date_class,
+        frequency: timedelta,
+        holidays: list,
+        default_payday: date_class):
+    """Adds frequency to the payday and updates the payday by leveraging
+       the given holidays and default_payday.
+    """
+    if payday.weekday() != default_payday.value:
+        offset = default_payday.value - payday.weekday()
+        payday += timedelta(days=offset)
+        
+    payday += frequency
 
+    # keep finding a valid payday
+    if payday in holidays:
+        payday = get_valid_business_day(payday, holidays)
+    
+    return payday
 
 def get_nearest_payday(
         date: date_class,
@@ -47,27 +65,24 @@ def get_nearest_payday(
        to 'date'.
     """
     _payday = given_payday
-
-    def __update_payday( _frequency: timedelta):
-        nonlocal _payday
-
-        if _payday.weekday() != default_payday.value:
-            offset = default_payday.value - _payday.weekday()
-            _payday += timedelta(days=offset)
-            
-        _payday += _frequency
-
-        # keep finding a valid payday
-        if _payday in holidays:
-            _payday = get_valid_business_day(_payday, holidays)
         
     if date < given_payday:  # Go Backward
         # change frequency to negative
         frequency = timedelta(days=-1*frequency.days)
         while (_payday > date):
-            __update_payday(_frequency=frequency)
+            _payday = update_payday(
+                payday=_payday,
+                frequency=frequency,
+                holidays=holidays,
+                default_payday=default_payday
+            )
     else: # Go Forward
         while (_payday < date):
-            __update_payday(_frequency=frequency)
-
+            _payday = update_payday(
+                payday=_payday,
+                frequency=frequency,
+                holidays=holidays,
+                default_payday=default_payday
+            )
+            
     return _payday

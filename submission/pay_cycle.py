@@ -15,12 +15,10 @@ from datetime import (
 # Local Imports
 from helpers import (
     get_nearest_payday,
-    get_valid_business_day
+    get_valid_business_day,
+    update_payday
 )
 from enums import PayCycleType, WeekPlaceholder
-
-
-# TODO: ADD DOC STRINGS for all methods 
 
 
 class PayCycle:
@@ -34,8 +32,8 @@ class PayCycle:
                  holidays: list):
         """Constructor for PayCycle Class.
 
-        Note: This assumes that along with pay cycle type, users will accurately report 
-        their first payday.
+        Note: This assumes that along with the type of pay cycle, users will 
+        accurately report their first payday.
 
         Args:
             pay_cycle_type (str): Type of user's pay cycle. 
@@ -89,20 +87,18 @@ class PayCycle:
         # Edge Case: After skipping, If we land on the given 'date' or before 
         # then we need to add the frequency to get the next payday.
         if date >= _payday:
-            _payday += self.frequency
-            # keep finding a valid payday
-            if _payday in self.holidays:
-                _payday = get_valid_business_day(_payday, self.holidays)
+            _payday = update_payday(
+                payday=_payday,
+                frequency=self.frequency,
+                holidays=self.holidays,
+                default_payday=self.default_payday
+            )
 
         return _payday 
 
     def get_next_x_paydays(self, x_number_of_paydays: int, date: date_class=date_class.today()) -> list:
         next_x_paydays_list = []
-        if date < self.first_payday:
-            date = self.first_payday
-            next_x_paydays_list.append(date)
         
-        # OPTIMIZE by caching the paydays in a self. variable
         for _ in range(x_number_of_paydays):
             date = self.get_next_payday(date)
             next_x_paydays_list.append(date)
