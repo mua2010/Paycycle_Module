@@ -1,6 +1,5 @@
 # Standard Library Imports
 from unittest import TestCase as UnitTestCase
-
 from datetime import (
     date as date_class,
     timedelta

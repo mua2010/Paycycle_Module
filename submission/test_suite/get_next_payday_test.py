@@ -1,10 +1,6 @@
 # Standard Library Imports
 from unittest import TestCase as UnitTestCase
-
-from datetime import (
-    date as date_class,
-    timedelta
-)
+from datetime import date as date_class
 
 # Local Imports
 from pay_cycle import PayCycle
