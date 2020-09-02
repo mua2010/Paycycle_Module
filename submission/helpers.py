@@ -5,7 +5,7 @@ from datetime import (
 )
 
 # Local Imports
-from enums import WeekPlaceholder
+from enums import WeekNamePlaceholder
 
 
 def get_nearest_business_day(date: date_class, holidays: list) -> date_class:
@@ -72,7 +72,7 @@ def get_nearest_payday(
         frequency: timedelta,
         holidays: list,
         given_payday: date_class,
-        default_payday: WeekPlaceholder) -> date_class:
+        default_payday: WeekNamePlaceholder) -> date_class:
     """Leverage the given constraints to calculate a payday that is nearest
        to 'date'.
     """

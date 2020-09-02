@@ -18,7 +18,7 @@ from helpers import (
     get_nearest_payday,
     update_payday
 )
-from enums import PayCycleType, WeekPlaceholder
+from enums import PayCycleType, WeekNamePlaceholder
 
 
 class PayCycle:
@@ -48,7 +48,7 @@ class PayCycle:
         self.first_payday = first_payday
         self.holidays = holidays
 
-        self.default_payday = WeekPlaceholder.__getitem__(default_payday)
+        self.default_payday = WeekNamePlaceholder.__getitem__(default_payday)
 
     def is_payday(self, date: date_class=date_class.today()) -> bool:
         """Return True if the given date is payday for the user; False otherwise.
@@ -100,7 +100,6 @@ class PayCycle:
     def get_next_x_paydays(self, x_number_of_paydays: int, date: date_class=date_class.today()) -> list:
         next_x_paydays_list = []
         
-        # OPTIMIZE by caching the paydays in a self. variable
         for _ in range(x_number_of_paydays):
             date = self.get_next_payday(date)
             next_x_paydays_list.append(date)

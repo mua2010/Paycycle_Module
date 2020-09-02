@@ -4,7 +4,7 @@ from datetime import date as date_class
 
 # Local Imports
 from pay_cycle import PayCycle
-from enums import WeekPlaceholder
+from enums import WeekNamePlaceholder
 
 # Third-Party Imports
 import holidays
@@ -113,4 +113,4 @@ class TestNextPayday(UnitTestCase):
         next_payday = pay_cycle_object().get_next_payday(date)
         assert next_payday == expected_next_payday, \
             f'Got {next_payday}, expected {expected_next_payday}'
-        assert WeekPlaceholder(next_payday.weekday()) == WeekPlaceholder.THURSDAY
+        assert WeekNamePlaceholder(next_payday.weekday()) == WeekNamePlaceholder.THURSDAY
