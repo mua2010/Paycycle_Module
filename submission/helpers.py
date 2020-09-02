@@ -35,6 +35,7 @@ def get_valid_business_day(date: date_class, holidays) -> date_class:
             date += timedelta(days=num_of_days_after_holiday)
     return date
     
+
 def update_payday(
         payday: date_class,
         frequency: timedelta,
@@ -54,6 +55,7 @@ def update_payday(
         payday = get_valid_business_day(payday, holidays)
     
     return payday
+
 
 def get_nearest_payday(
         date: date_class,
@@ -84,5 +86,5 @@ def get_nearest_payday(
                 holidays=holidays,
                 default_payday=default_payday
             )
-            
+
     return _payday

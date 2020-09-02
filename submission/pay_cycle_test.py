@@ -309,6 +309,26 @@ class TestPayCycle(unittest.TestCase):
     def test_get_next_x_paydays_positive0(self):
         """Positive Test case to check if correct next x number 
            of bi-weekly paydate objects are returned if the
+           given date is less than first payday.
+        """
+        start_date = date_class(2018,1,22)
+        x_number_of_paydays = 3
+        expected_next_x_paydays = [
+            date_class(2018,1,26),
+            date_class(2018,2,9),
+            date_class(2018,2,23)
+        ]
+
+        next_x_paydays_list = self.pay_cycle.get_next_x_paydays(x_number_of_paydays, start_date)
+
+        assert len(next_x_paydays_list) == x_number_of_paydays, \
+            f'Got {len(next_x_paydays_list)}, expected {x_number_of_paydays}'
+        assert next_x_paydays_list == expected_next_x_paydays, \
+            f'Got {next_x_paydays_list}, expected {expected_next_x_paydays}'
+
+    def test_get_next_x_paydays_positive1(self):
+        """Positive Test case to check if correct next x number 
+           of bi-weekly paydate objects are returned if the
            given date is a payday.
         """
         start_date = date_class(2019,11,15)
@@ -328,7 +348,7 @@ class TestPayCycle(unittest.TestCase):
         assert next_x_paydays_list == expected_next_x_paydays, \
             f'Got {next_x_paydays_list}, expected {expected_next_x_paydays}'
 
-    def test_get_next_x_paydays_positive1(self):
+    def test_get_next_x_paydays_positive2(self):
         """Positive Test case to check if correct next x number 
            of bi-weekly paydate objects are returned if the
            given date is not a payday.

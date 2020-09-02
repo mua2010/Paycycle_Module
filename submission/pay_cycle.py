@@ -99,6 +99,7 @@ class PayCycle:
     def get_next_x_paydays(self, x_number_of_paydays: int, date: date_class=date_class.today()) -> list:
         next_x_paydays_list = []
         
+        # OPTIMIZE by caching the paydays in a self. variable
         for _ in range(x_number_of_paydays):
             date = self.get_next_payday(date)
             next_x_paydays_list.append(date)
