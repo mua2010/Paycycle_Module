@@ -8,29 +8,33 @@ from datetime import (
 from enums import WeekPlaceholder
 
 
-def get_valid_date(holiday: date_class) -> date_class:
-    """Given a holiday, return the nearest weekday that is not a holiday.
+def get_valid_business_day(date: date_class, holidays) -> date_class:
+    """Given a date, return the nearest business day that could be a
+       potential payday.
+       Note: For the days in a week, placeholder for Monday is 0 and Sunday is 6
     """
-    # for a weekday, placeholder for Monday is 0 and Sunday is 6
+    
+    while date in holidays:
+        num_of_days_after_holiday = 1
+        week_day_placeholder = (date + timedelta(days=num_of_days_after_holiday)).weekday()
+        while week_day_placeholder in {5,6}:
+            num_of_days_after_holiday += 1
+            week_day_placeholder = (date + timedelta(days=num_of_days_after_holiday)).weekday()
+            
+        num_of_days_before_holiday = 1
+        week_day_placeholder = (date - timedelta(days=num_of_days_before_holiday)).weekday()
+        while week_day_placeholder in {5,6}:
+            num_of_days_before_holiday += 1
+            week_day_placeholder = (date - timedelta(days=num_of_days_before_holiday)).weekday()
 
-    num_of_days_after_holiday = 1
-    week_day_placeholder = (holiday + timedelta(days=num_of_days_after_holiday)).weekday()
-    while week_day_placeholder in {5,6}:
-        num_of_days_after_holiday += 1
-        week_day_placeholder = (holiday + timedelta(days=num_of_days_after_holiday)).weekday()
-        
-    num_of_days_before_holiday = 1
-    week_day_placeholder = (holiday - timedelta(days=num_of_days_before_holiday)).weekday()
-    while week_day_placeholder in {5,6}:
-        num_of_days_before_holiday += 1
-        week_day_placeholder = (holiday - timedelta(days=num_of_days_before_holiday)).weekday()
-
-    # POST PROCESS
-    # Note: If the number of days before and after are same, the default date will be next day.
-    if num_of_days_before_holiday < num_of_days_after_holiday:
-        return holiday - timedelta(days=num_of_days_before_holiday)
-    else:
-        return holiday + timedelta(days=num_of_days_after_holiday)
+        # POST PROCESS
+        # Note: If the number of days before and after are same, the default date will be next day.
+        if num_of_days_before_holiday < num_of_days_after_holiday:
+            date -= timedelta(days=num_of_days_before_holiday)
+        else:
+            date += timedelta(days=num_of_days_after_holiday)
+    return date
+    
 
 
 def get_nearest_payday(
@@ -67,8 +71,8 @@ def get_nearest_payday(
         _payday += _frequency
 
         # keep finding a valid payday
-        while _payday in holidays:
-            _payday = get_valid_date(_payday)
+        if _payday in holidays:
+            _payday = get_valid_business_day(_payday, holidays)
         
 
     

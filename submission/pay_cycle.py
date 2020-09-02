@@ -15,7 +15,7 @@ from datetime import (
 # Local Imports
 from helpers import (
     get_nearest_payday,
-    get_valid_date
+    get_valid_business_day
 )
 from enums import PayCycleType, WeekPlaceholder
 
@@ -78,7 +78,7 @@ class PayCycle:
         """Given a date, find the next payday for the user.
         """
         # skip to the payday nearest to the 'date'
-        payday = get_nearest_payday(
+        _payday = get_nearest_payday(
             date=date,
             frequency=self.frequency,
             holidays=self.holidays,
@@ -88,13 +88,18 @@ class PayCycle:
 
         # Edge Case: After skipping, If we land on the given 'date' or before 
         #            then we need to add the frequency to get the next payday.
-        if date >= payday:
-            if (holiday := (payday + self.frequency)) in self.holidays:
-                payday = get_valid_date(holiday)
-            else:
-                payday += self.frequency
+        if date >= _payday:
+            _payday += self.frequency
 
-        return payday 
+            # keep finding a valid payday
+            if _payday in self.holidays:
+                _payday = get_valid_business_day(_payday, self.holidays)
+            # if (holiday := (payday + self.frequency)) in self.holidays:
+            #     payday = get_valid_date(holiday)
+            # else:
+            #     payday += self.frequency
+
+        return _payday 
 
     def get_next_x_paydays(self, x_number_of_paydays: int, date: date_class=date_class.today()) -> list:
         next_x_paydays_list = []
